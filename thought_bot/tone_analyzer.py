@@ -5,11 +5,12 @@ This will attempt to analyze a thought or concept into a rough calculation of wh
 Utilizes the IBM Watson AI's Tone Analyzer API
 """
 
-from watson_developer_cloud.tone_analyzer_v3 import ToneAnalyzerV3
 import random
 
+from watson_developer_cloud.tone_analyzer_v3 import ToneAnalyzerV3
+
 # set tones and their thresholds for consideration
-from thought_bot.config import bad_thoughts_path, good_thoughts_path
+from thought_bot.config import bad_thoughts_path, good_thoughts_path, watson_api_password, watson_api_username
 
 BAD_TONES = {
     'anger': .1,
@@ -125,8 +126,8 @@ class Thought(object):
         self.neutral_score = 0
         self.tone_analyzer = ToneAnalyzerV3(version='2017-09-21',
                                             url='https://gateway.watsonplatform.net/tone-analyzer/api',
-                                            username='0966265a-b0c0-4b35-9f8b-a53e934eeb1a',
-                                            password='ukKiZ7JE2sbj'
+                                            username=watson_api_username,
+                                            password=watson_api_password
                                             )
         if not alignment:
             self._alignment = self.decipher_thought(thought)
