@@ -1,9 +1,6 @@
 import unittest
 
-import thought_bot.tone_analyzer
-from thought_bot import tone_analyzer, game, config
-
-
+from thought_bot import tone_analyzer
 
 
 class BrainTests(unittest.TestCase):
@@ -33,22 +30,22 @@ class BrainTests(unittest.TestCase):
         uncertain_thought = "I cant wait for this party, it's going to be so fun!"
         brain.create_thought(bad_thought)
         brain.create_thought(good_thought)
-        brain.create_thought(uncertain_thought)
+        brain.create_thought(uncertain_thought, "Uncertain")
         bad_result = brain.get_thought('Bad', 0)
         print bad_result
         print bad_result.thought
         self.assertEqual(bad_result.thought, bad_thought)
-        self.assertEqual(bad_result.alignment, 'Bad')
+        self.assertEqual(bad_result.alignment['Result'], 'Bad')
         good_result = brain.get_thought('Good', 0)
         print good_result
         print good_result.thought
         self.assertEqual(good_result.thought, good_thought)
-        self.assertEqual(good_result.alignment, 'Good')
+        self.assertEqual(good_result.alignment['Result'], 'Good')
         uncertain_result = brain.get_thought('Uncertain', 0)
         print uncertain_result
         print uncertain_result.thought
         self.assertEqual(uncertain_result.thought, uncertain_thought)
-        self.assertEqual(uncertain_result.alignment, 'Uncertain')
+        self.assertEqual(uncertain_result.alignment['Result'], 'Uncertain')
 
     def test_load_thoughts(self):
         good, bad = tone_analyzer.load_thoughts()
@@ -64,6 +61,15 @@ class BrainTests(unittest.TestCase):
         for t in thought_result:
             self.assertIn(t.thought, thought_list)
 
+    def test_overall_thought_tone(self):
+        brain = tone_analyzer.Brain('Test')
+        good, bad = tone_analyzer.load_thoughts()
+        brain.absorb_thoughts(good[:5])
+        brain.absorb_thoughts(bad[:5])
+        print "Overall Tone"
+        print brain.overall_thought_tone
+        # print a 2nd time to test caching.
+        print brain.overall_thought_tone
+        print brain.overall_thought_score
 
-
-
+        print brain.alignment
