@@ -4,33 +4,71 @@ I made a bot that helped me put thoughts into perspective and turn them into a s
 
 ## Usage
 `python run.py`
+
+### Choose your name
 ```
 Welcome to the Thought Bot.
 ###########################
 
-What is your name?:User
-Thought #1
-##################################
+What is your name?: Player
+```
+
+### Answer a question
+```
+Thought #1 of 2
+#####################################################
 A random thought enters your head:
-##################################
-Lets do that selfish thing that will hurt the people around me.
+#####################################################
+I will never be as good as {name}.
 
 
 Its a Bad thought. How do you respond?
 Choose an example that fits or type your own
-##################################
-#1: These things happen sometimes.
-#2: I am grateful for the opportunity.
-#3: I wish you the best.
-#4: I am worth it.
-#5: Things could be much worse.
-Enter your response:Take a step back and try to see what you might do to someone.
-###################################
-You chose to think: Take a step back and try to see what you might do to someone.
-That thought is a Good thought.
-rated: {'Bad': 0, 'Good': 0, 'Neutral': 0.955608}
-{u'tones': [{u'tone_name': u'Tentative', u'score': 0.955608, u'tone_id': u'tentative'}]}
-Enter to continue```
+#####################################################
+#1: You will feel better if you ask.
+#2: Don't take anything personally.
+#3: These things happen sometimes.
+#4: I dont need anyone else to have a good time.
+#5: I am worth it.
+Enter your response:2
+```
 
-Pretty basic. Definitely no substitiute for getting real help for yourself. 
+### Check your answer
+```
+####################################################
+You chose to think: Don't take anything personally.
+That thought is a Good thought.
+rated: {'Bad': 0, 'Good': 0, 'Neutral': 0.984352}
+{u'tones': [{u'tone_name': u'Tentative', u'score': 0.984352, u'tone_id': u'tentative'}]}
+Does this result work for you? [Y/n]: y
+```
+### End of round
+```Well done. You entered 2 thoughts. Lets see how you did.
+
+The AI has judged your overall attitude as Good:
+#####################################################
+Tentative: 0.966403
+Bad: 0
+Good: 0
+Neutral: 0.966403
+
+Here are your thoughts for the round:
+#####################################################
+
+Good Thought: "Don't take anything personally."
+\
+ Thought Tones - Tentative: 0.984352
+ Thought Alignment - Bad: 0 - Good: 0 - Neutral: 0.984352
+Uncertain Thought: "I am going to go do that anyways."
+\
+ Thought Tones
+ Thought Alignment - Bad: 0 - Good: 0 - Neutral: 0
+
+All your thoughts individual scores combined came out to:
+#####################################################
+Bad: 0
+Good: 0
+Neutral: 0.966403
+Press Enter To Continue```
+
 
