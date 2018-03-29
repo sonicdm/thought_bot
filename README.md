@@ -43,7 +43,8 @@ rated: {'Bad': 0, 'Good': 0, 'Neutral': 0.984352}
 Does this result work for you? [Y/n]: y
 ```
 ### End of round
-```Well done. You entered 2 thoughts. Lets see how you did.
+```
+Well done. You entered 2 thoughts. Lets see how you did.
 
 The AI has judged your overall attitude as Good:
 #####################################################
@@ -69,6 +70,7 @@ All your thoughts individual scores combined came out to:
 Bad: 0
 Good: 0
 Neutral: 0.966403
-Press Enter To Continue```
+Press Enter To Continue
+```
 
 
