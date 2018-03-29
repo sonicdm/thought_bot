@@ -43,14 +43,19 @@ class Brain(object):
         self.name = name
         self._thoughts = {"All": [], "Good": [], "Bad": [], "Uncertain": []}
         self.banished_thoughts = 0
+        self._master_thought = None
+        self.__last_thoughts = None
+        self._overall_tone = None
+        self._master_thought = None
 
     def create_thought(self, thought_str, alignment=None):
         if isinstance(thought_str, (str,unicode)):
             thought = Thought(thought_str, self, alignment)
         else:
             thought = thought_str
+            thought.parent = self
         self._thoughts['All'].append(thought)
-        self._thoughts[thought.alignment].append(thought)
+        self._thoughts[thought.alignment['Result']].append(thought)
         return thought
 
     def absorb_thoughts(self, l, alignment=None):
@@ -85,7 +90,7 @@ class Brain(object):
         purge_from_dict_lists(thoughtobj, self._thoughts)
         self.banished_thoughts += 1
 
-    def get_thought(self, alignment, idx=0):
+    def get_thought(self, alignment, idx=0, default=None):
         """
 
         :param alignment:
@@ -94,11 +99,43 @@ class Brain(object):
         :rtype Thought
         :returns Thought
         """
-        thought = self._thoughts[alignment][idx]
-        return thought
+        try:
+            thought = self._thoughts[alignment][idx]
+            return thought
+        except IndexError:
+            return default
 
     def get_thoughts(self, alignment='All'):
         return self._thoughts[alignment]
+
+    @property
+    def overall_thought_tone(self):
+        return self.master_thought.thought_tone['document_tone']['tones']
+
+    @property
+    def overall_thought_score(self):
+        overall_score = {"Good": 0, "Bad": 0, "Neutral": 0}
+        for thought in self._thoughts['All']:
+            for k, v in thought.scores.iteritems():
+                overall_score[k] += v
+        return overall_score
+
+    @property
+    def alignment(self):
+        return self.master_thought.alignment
+
+    @property
+    def master_thought(self):
+        thoughts = ""
+        # use cached result if the thoughts are unchanged
+        if self.__last_thoughts is not self._thoughts:
+            # create a string containing all of the different thoughts
+            for thought in self.get_thoughts():
+                thoughts = thoughts + " " + thought.thought
+            self._master_thought = Thought(thoughts)
+        # make a copy of current thought set for later comparison
+        self.__last_thoughts = self._thoughts
+        return self._master_thought
 
     def __repr__(self):
         return "<{owner}'s Brain>".format(owner=self.name)
@@ -152,18 +189,8 @@ class Thought(object):
             self.bad_score = self.bad_emotions['total_score']
             self.combined_score = self.neutral_score + self.good_score + self.bad_score
 
-        # Figure out which emotion winds up weighing the most. Neutral emotions are weighted different for bad & good.
-        if self.bad_score + (self.neutral_score * .7) > self.good_score + (self.neutral_score * .9):
-            result = {'Result': 'Bad', 'Good': self.good_score,
-                    "Neutral": self.neutral_score, 'Bad': self.bad_score}
+        result = self._align(self.good_score, self.bad_score, self.neutral_score)
 
-        elif self.bad_score + (self.neutral_score * .7) < self.good_score + (self.neutral_score * .9):
-            result = {'Result': 'Good', 'Good': self.good_score,
-                      "Neutral": self.neutral_score, 'Bad': self.bad_score}
-
-        elif self.neutral_score > self.bad_score and self.neutral_score > self.good_score or self.combined_score <= 0:
-            result = {'Result': 'Uncertain', 'Good': self.good_score,
-                    "Neutral": self.neutral_score, 'Bad': self.bad_score}
         self._alignment = result
         return result
 
@@ -179,13 +206,34 @@ class Thought(object):
 
         return emotion_dict
 
+    def _align(self, good, bad, neutral):
+        # Figure out which emotion winds up weighing the most. Neutral emotions are weighted different for bad & good.
+        bad_weight = .7
+        good_weight = .9
+        bad_score = bad + (neutral * bad_weight)
+        good_score = good + (neutral * good_weight)
+        alignment = "Uncertain"
+
+        if bad_score > good_score:
+            alignment = "Bad"
+
+        elif good_score > bad_score:
+            alignment = "Good"
+
+        elif good_score < neutral > bad_score:
+            alignment = "Uncertain"
+
+        result = {'Result': alignment, 'Good': good_score,
+                  'Neutral': neutral, 'Bad': bad_score}
+        return result
+
     @property
     def scores(self):
         return {"Good": self.good_score, "Bad": self.bad_score, "Neutral": self.neutral_score}
 
     @property
     def alignment(self):
-        return self._alignment['Result']
+        return self._alignment
 
     @property
     def combined_score(self):

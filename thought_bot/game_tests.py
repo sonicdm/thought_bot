@@ -1,5 +1,6 @@
 import unittest
-from thought_bot import tone_analyzer, game, config
+
+from thought_bot import tone_analyzer, game
 
 
 class GameTests(unittest.TestCase):
@@ -21,7 +22,7 @@ class GameTests(unittest.TestCase):
         host = 'Bot'
         the_game = game.Game(player, host, good, bad)
         new_round = game.Round(the_game, 1)
-        self.assertGreater(len(new_round.thoughts), 0)
+        self.assertGreater(len(new_round.host_thoughts), 0)
         self.assertGreater(len(new_round.good_thoughts), 0)
 
 
