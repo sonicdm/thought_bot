@@ -10,3 +10,7 @@ setup(
     author_email='',
     description=''
 )
+
+install_requires=[
+   'watson_developer_cloud'
+]
